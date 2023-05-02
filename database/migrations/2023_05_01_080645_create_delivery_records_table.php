@@ -16,7 +16,7 @@ return new class extends Migration {
             // $table->foreign('farmer_id')->references('id')->on('users');
             $table->integer('fat');
             $table->integer('litre');
-            $table->integer('date');
+            $table->string('date');
             $table->integer('price');
             $table->timestamps();
         });

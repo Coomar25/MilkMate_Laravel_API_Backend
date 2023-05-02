@@ -65,12 +65,13 @@ class FarmerController extends Controller
         $totalearning = new Earning();
         // $delivery = DeliveryRecord::latest()->first();
         // $order = Farmer_Order::latest()->first();
-
+        $totalSales = DeliveryRecord::where('user_id', $userId)->sum('litre');
         $incomePrice = DeliveryRecord::where('user_id', $userId)->sum('price');
         $expenditurePrice = FarmerOrder::where('user_id', $userId)->latest('created_at')->sum('expenditure');
 
 
         $totalearning->user_id = $userId;
+        $totalearning->sales = $totalSales;
         $totalearning->income = $incomePrice;
         $totalearning->expenditure = $expenditurePrice;
         $totalearning->earning = $totalearning->income - $totalearning->expenditure;

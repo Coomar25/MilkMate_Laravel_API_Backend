@@ -10,6 +10,7 @@ class Earning extends Model
     use HasFactory;
 
     protected $fillable = [
+        'sales',
         'income',
         'expenditure',
         'earning'

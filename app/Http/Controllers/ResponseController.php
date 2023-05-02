@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DeliveryRecord;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\InfoUser;
 use App\Models\FarmerOrder;
+use App\Models\Earning;
 
 class ResponseController extends Controller
 {
@@ -29,5 +31,28 @@ class ResponseController extends Controller
             'farmerOrderRecord' => $orderRecord
         ]);
     }
+
+
+
+    public function farmerTotalEarning($user_id)
+    {
+        $farmerEarning = Earning::where('user_id', $user_id)->get()->sortDesc()->first();
+        return response()->json([
+            'earningFarmer' => $farmerEarning
+        ]);
+    }
+
+
+    public function farmerDailyRecords($user_id)
+    {
+        $farmerDailyDeliveryRecords = DeliveryRecord::where('user_id', $user_id)->get();
+        return response()->json([
+            'earningFarmer' => $farmerDailyDeliveryRecords
+        ]);
+    }
+
+
+
+
 
 }

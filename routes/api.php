@@ -7,26 +7,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FarmerController;
 use App\Http\Controllers\ResponseController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-
-//Public Route
-
-// Route::post('/register', [UserController::class, 'store']);
-// Route::post('/login', [UserController::class, 'login']);
-
-
-
-
 
 //Private Route
 
@@ -35,18 +15,6 @@ use App\Http\Controllers\ResponseController;
 //     ROute::get('/index', [UserController::class, 'index']);
 //     Route::post('/logout', [UserController::class, 'logout']);
 // });
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
 
 
 Route::post('login', [AuthController::class, 'login']);
@@ -62,16 +30,14 @@ Route::get('farmer', [FarmerController::class, 'index']);
 
 
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
-
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
-
-
-
 });
 
 
 
 Route::get('totalFarmers', [ResponseController::class, 'totalFarmers']);
 Route::get('farmersOrderRecord', [ResponseController::class, 'farmersOrderRecord']);
+Route::get('farmerTotalEarning/{user_id}', [ResponseController::class, 'farmerTotalEarning']);
+Route::get('farmerDailyRecords/{user_id}', [ResponseController::class, 'farmerDailyRecords']);
