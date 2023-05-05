@@ -83,6 +83,8 @@ class ResponseController extends Controller
     }
 
 
+
+
     // public function farmerTotalEarning($user_id)
     // {
     //     $farmerEarning = Earning::where('user_id', $user_id)->get()->sortDesc()->first();
@@ -99,6 +101,15 @@ class ResponseController extends Controller
     //         'deliveryrecord' => $farmerDailyDeliveryRecords
     //     ]);
     // }
+
+    public function individualFarmerOrders(Request $request)
+    {
+        $user_id = $request->query('user_id');
+        $individual_order_record = FarmerOrder::where('user_id', $user_id)->get();
+        return response()->json([
+            'indivudualOrder' => $individual_order_record
+        ]);
+    }
 
     public function fetchSuppyItem()
     {

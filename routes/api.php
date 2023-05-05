@@ -13,6 +13,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [UserController::class, 'store']);
 Route::get('fetchSuppyItem', [ResponseController::class, 'fetchSuppyItem']);
 Route::get('farmerDeliveredStatement', [ResponseController::class, 'farmerDeliveredStatement']);
+Route::get('individualFarmerOrders', [ResponseController::class, 'individualFarmerOrders']);
 
 
 // *********************************************************************************************//
