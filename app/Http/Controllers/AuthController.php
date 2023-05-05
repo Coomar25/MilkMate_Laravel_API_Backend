@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\InfoUser;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\JWT;
+use App\Models\User;
 
 
 class AuthController extends Controller
@@ -35,6 +37,25 @@ class AuthController extends Controller
 
         return $this->respondWithToken($token);
     }
+
+
+    // public function login()
+    // {
+    //     $credentials = request(['email', 'password', 'utype']);
+    //     if (!$token = auth()->attempt($credentials)) {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
+    //     }
+    //     if (!$user = auth()->attempt($credentials)) {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
+    //     }
+    //     $user = new User();
+    //     $token = JWTAuth::fromUser($user, $user->id);
+
+    //     return $this->respondWithToken($token);
+    // }
+
+
+
 
     /**
      * Get the authenticated User.
@@ -86,4 +107,8 @@ class AuthController extends Controller
             'user' => auth()->user()
         ]);
     }
+
+
+
+
 }

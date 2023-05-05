@@ -13,50 +13,42 @@ class UserController extends Controller
     public function login(Request $request)
     {
 
-        $validateData = $request->validate([
-            'email' => 'required|string|email|max:255',
-            'password' => ['required', 'min:8'],
+        // $validateData = $request->validate([
+        //     'email' => 'required|string|email|max:255',
+        //     'password' => ['required', 'min:8'],
 
-        ]);
+        // ]);
 
-        if ($validateData) {
-            $user = User::where('email', $request->email)->first();
-            if (!$user || !Hash::check($request->password, $user->password)) {
-                return response(
-                    [
-                        'message' => 'mis match credentials'
-                    ],
-                    404
-                );
-            }
+        // if ($validateData) {
+        //     $user = User::where('email', $request->email)->first();
+        //     if (!$user || !Hash::check($request->password, $user->password)) {
+        //         return response(
+        //             [
+        //                 'message' => 'mis match credentials'
+        //             ],
+        //             404
+        //         );
+        //     }
 
-            $token = $user->createToken($request->email)->plainTextToken;
-            return response([
-                'token' => $token,
-                'message' => 'Login Successfull',
-                'user' => $user
-            ], 200);
-
-
-        }
-
+        //     $token = $user->createToken($request->email)->plainTextToken;
+        //     return response([
+        //         'token' => $token,
+        //         'message' => 'Login Successfull',
+        //         'user' => $user
+        //     ], 200);
+        // }
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        // Auth::logout();
-        return response()->json(['message' => 'Successfully logged out']);
+        // $request->user()->currentAccessToken()->delete();
+        // // Auth::logout();
+        // return response()->json(['message' => 'Successfully logged out']);
 
     }
 
     public function index()
     {
-
-        return response([
-            'message' => "Hello there this is response from index private route"
-        ]);
-
 
     }
     public function create()

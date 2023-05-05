@@ -12,7 +12,8 @@ class SupplyItem extends Model
     protected $fillable = [
         'name',
         'description',
-        'price'
+        'price',
+        'image'
     ];
 
 }

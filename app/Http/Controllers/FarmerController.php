@@ -13,7 +13,7 @@ use App\Models\Earning;
 
 class FarmerController extends Controller
 {
-    public function index()
+    public function farmer()
     {
         $user = User::with('infoUser')->first();
         return $response = [
@@ -34,30 +34,29 @@ class FarmerController extends Controller
     }
 
 
+
     public function supplyInventory(Request $request)
     {
-
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required | string | max:255',
-            'price' => 'required | integer | min:255'
+            'description' => 'required|string|max:255',
+            'price' => 'required|integer|min:255',
+            'image' => 'required|image|max:2048'
         ]);
-
-        if ($validatedData) {
-            $supply = new SupplyItem();
-            $supply->name = $validatedData['name'];
-            $supply->description = $validatedData['description'];
-            $supply->price = $validatedData['price'];
-            $supply->save();
+        $supply = new SupplyItem();
+        $supply->name = $validatedData['name'];
+        $supply->description = $validatedData['description'];
+        $supply->price = $validatedData['price'];
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move('images/', $imageName);
+            $supply->image = $imageName;
         }
-
-        $response = [
-            'message' => "supply item has been successfully stored",
-            200
-        ];
-
-        return ($response);
+        $supply->save();
+        return response()->json(['message' => 'Supply item has been successfully stored.']);
     }
+
 
 
     public function earning($userId)
@@ -68,7 +67,6 @@ class FarmerController extends Controller
         $totalSales = DeliveryRecord::where('user_id', $userId)->sum('litre');
         $incomePrice = DeliveryRecord::where('user_id', $userId)->sum('price');
         $expenditurePrice = FarmerOrder::where('user_id', $userId)->latest('created_at')->sum('expenditure');
-
 
         $totalearning->user_id = $userId;
         $totalearning->sales = $totalSales;
@@ -97,7 +95,7 @@ class FarmerController extends Controller
             'user_id' => 'required|integer|max:255',
             'fat' => 'required|integer|max:255|',
             'litre' => 'required|integer|max:255|',
-            'date' => 'required|integer|max:255|',
+            // 'date' => 'required|date|max:255|',
         ]);
 
         if ($validatedData) {
@@ -105,7 +103,8 @@ class FarmerController extends Controller
             $user->user_id = $validatedData['user_id'];
             $user->fat = $validatedData['fat'];
             $user->litre = $validatedData['litre'];
-            $user->date = $validatedData['date'];
+            // $user->date = $validatedData['date'];
+            $user->date = implode(',', $request->date);
 
             //Hamro Algorithm Price Calculate Garne
             //Calculate the price
@@ -120,7 +119,7 @@ class FarmerController extends Controller
             $userId = $user->user_id;
             $this->earning($userId);
             $response = [
-                'message' => 'New Milk Suppliers has been successfully registered',
+                'message' => 'Farmers Milk status addded',
                 200
             ];
 
@@ -174,6 +173,9 @@ class FarmerController extends Controller
     {
         $a = Earning::where('user_id', 1)->get()->sortDesc()->first();
         echo $a;
+        return response()->json([
+            $a
+        ]);
     }
 
 
