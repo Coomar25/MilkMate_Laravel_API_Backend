@@ -8,6 +8,8 @@ use App\Models\InfoUser;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\JWT;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
 
 
 class AuthController extends Controller
@@ -37,6 +39,36 @@ class AuthController extends Controller
 
         return $this->respondWithToken($token);
     }
+
+
+
+
+
+    // public function authforgetpassword(Request $request)
+    // {
+    //     if ($user = User::where('email', $request->email)->first()) {
+    //         $resettoken = JWTAuth::fromUser($user);
+    //         // $domain = URL::to(/);
+    //         $domain = 'http://localhost:3000';
+    //         $url = $domain . '/' . 'reset-password?resettoken=' . $resettoken;
+
+
+    //         $data['url'] = $url;
+    //         $data['email'] = $request->email;
+    //         $data['title'] = 'Reset Password';
+    //         $data['body'] = 'Message';
+
+    //         Mail::send('forgetPasswordMail', ['data' => $data], function ($message) use ($data) {
+    //             $message->to($data['email'])->subject($data['title']);
+    //         });
+
+    //     } else {
+    //         return response()->json([
+    //             'message' => 'Email does not exist'
+    //         ]);
+    //     }
+    // }
+
 
 
     // public function login()

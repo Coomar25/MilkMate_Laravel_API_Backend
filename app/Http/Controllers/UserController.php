@@ -2,10 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\TokenBasedResetPassword;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\InfoUser;
+use App\Models\PasswordResetToken;
+use App\Models\ResetToken;
+use Carbon\Carbon;
+use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+
 
 class UserController extends Controller
 {
@@ -13,38 +28,10 @@ class UserController extends Controller
     public function login(Request $request)
     {
 
-        // $validateData = $request->validate([
-        //     'email' => 'required|string|email|max:255',
-        //     'password' => ['required', 'min:8'],
-
-        // ]);
-
-        // if ($validateData) {
-        //     $user = User::where('email', $request->email)->first();
-        //     if (!$user || !Hash::check($request->password, $user->password)) {
-        //         return response(
-        //             [
-        //                 'message' => 'mis match credentials'
-        //             ],
-        //             404
-        //         );
-        //     }
-
-        //     $token = $user->createToken($request->email)->plainTextToken;
-        //     return response([
-        //         'token' => $token,
-        //         'message' => 'Login Successfull',
-        //         'user' => $user
-        //     ], 200);
-        // }
     }
 
     public function logout(Request $request)
     {
-        // $request->user()->currentAccessToken()->delete();
-        // // Auth::logout();
-        // return response()->json(['message' => 'Successfully logged out']);
-
     }
 
     public function index()
@@ -127,4 +114,129 @@ class UserController extends Controller
     {
 
     }
+
+
+    public function forgetpassword(Request $request)
+    {
+        try {
+            $user = User::where('email', $request->email)->get();
+            if (count($user) > 0) {
+                $resettoken = Str::random(40);
+                $domain = URL::to('/');
+                $url = $domain . '/' . 'api/reset-password?resettoken=' . $resettoken;
+                $data['url'] = $url;
+                $data['email'] = $request->email;
+                $data['title'] = 'Reset Password';
+                $data['body'] = 'Message';
+                Mail::send('forgetPasswordMail', ['data' => $data], function ($message) use ($data) {
+                    $message->to($data['email'])->subject($data['title']);
+                });
+                $dateTime = Carbon::now()->format('Y-m-d H:i:s');
+                ResetToken::updateOrCreate(
+                    ['email' => $request->email],
+                    [
+                        'email' => $request->email,
+                        'token' => $resettoken,
+                        'created_at' => $dateTime,
+                        'updated_at' => $dateTime
+                    ]
+                );
+
+                return response()->json([
+                    'message' => 'Check your Mail to reset you password'
+                ]);
+
+
+            } else {
+                return response()->json([
+                    'message' => "User does not exist "
+                ]);
+
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => "Failed "
+            ]);
+        }
+    }
+
+
+
+    public function resetpasswordUserInterface(Request $request)
+    {
+        $resetData = ResetToken::where('token', $request->resettoken)->first();
+        $email = $resetData->email;
+        $user = User::where('email', $email)->first();
+        // // echo ($user -> id);
+        $id = $user->id;
+        return view('changePasswordInterface', compact('id'));
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validatedData = $request->validate([
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password_confirmation' => ['required', 'string']
+        ]);
+
+        $user = User::find($request->id);
+        $user->password = Hash::make($validatedData['password']);
+        $user->save();
+        return response()->json([
+            'message' => 'password has been changed successfully'
+        ]);
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+//tala ko code works as fine ad above tala siddai check garxa vane mathi row lai count garera check // Limitation exception catch gardaina
+
+// if (User::where('email', $request->email)->exists()) {
+
+//     $resettoken = Str::random(40);
+//     // $domain = URL::to(/);
+//     $domain = 'http://localhost:3000';
+//     $url = $domain . '/' . 'reset-password?resettoken=' . $resettoken;
+
+
+//     $data['url'] = $url;
+//     $data['email'] = $request->email;
+//     $data['title'] = 'Reset Password';
+//     $data['body'] = 'Message';
+
+//     Mail::send('forgetPasswordMail', ['data' => $data], function ($message) use ($data) {
+//         $message->to($data['email'])->subject($data['title']);
+//     });
+
+//     $dateTime = Carbon::now()->format('Y-m-d H:i:s');
+
+//     User::updateOrCreate(
+//         ['email' => $request->email],
+//         [
+//             'email' => $request->email,
+//             'token' => $resettoken,
+//             'created_at' => $dateTime
+//         ]
+//     );
+//     return response()->json([
+//         'message' => 'Check your Mail to reset you password'
+//     ]);
+
+
+// } else {
+//     return response()->json([
+//         'message' => 'Email does not exist'
+//     ]);
+// }

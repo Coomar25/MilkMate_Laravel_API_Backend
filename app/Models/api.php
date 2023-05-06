@@ -17,10 +17,8 @@ Route::get('farmerDeliveredStatement', [ResponseController::class, 'farmerDelive
 Route::get('individualFarmerOrders', [ResponseController::class, 'individualFarmerOrders']);
 Route::get('farmer', [FarmerController::class, 'farmer']);
 
-Route::post('authforgetpassword', [AuthController::class, 'authforgetpassword']);
-Route::post('forgetpassword', [UserController::class, 'forgetpassword']);
-// Route::post('reset-password', [UserController::class, 'resetpassword']);
 
+Route::post('forgetpassword', [UserController::class, 'forgetpassword']);
 // ********************************************************************************************************//
 // Custom Made Change Password Middleware where i created token my self and checked whether it exist or not//
 // ********************************************************************************************************//
