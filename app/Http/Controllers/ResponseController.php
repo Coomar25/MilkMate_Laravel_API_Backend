@@ -104,7 +104,13 @@ class ResponseController extends Controller
 
     public function individualFarmerOrders(Request $request)
     {
-        $user_id = $request->query('user_id');
+        $token = $request->query('token');
+        try {
+            $decodedToken = JWTAuth::decode(new Token($token));
+        } catch (\Exception $ex) {
+            return response()->json([$ex]);
+        }
+        $user_id = $decodedToken->get('sub');
         $individual_order_record = FarmerOrder::where('user_id', $user_id)->get();
         return response()->json([
             'indivudualOrder' => $individual_order_record

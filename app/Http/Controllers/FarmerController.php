@@ -10,6 +10,7 @@ use App\Models\DeliveryRecord;
 use App\Models\SupplyItem;
 use App\Models\FarmerOrder;
 use App\Models\Earning;
+use TheSeer\Tokenizer\Exception;
 
 class FarmerController extends Controller
 {
@@ -32,6 +33,8 @@ class FarmerController extends Controller
 
         // ];
     }
+
+
 
 
 
@@ -171,12 +174,43 @@ class FarmerController extends Controller
 
     public function test()
     {
-        $a = Earning::where('user_id', 1)->get()->sortDesc()->first();
-        echo $a;
-        return response()->json([
-            $a
-        ]);
+
+        echo "hello there";
+        // $a = Earning::where('user_id', 1)->get()->sortDesc()->first();
+        // echo $a;
+        // return response()->json([
+        //     $a
+        // ]);
     }
+
+
+
+    public function deleteInventory(Request $request)
+    {
+        $id = $request->id;
+        $item = SupplyItem::whereId($id);
+        // return response()->json("Successfullty data deleted");
+        try {
+            $item->delete();
+            $response = [
+                'message' => 'Item has been delete successfully',
+            ];
+            $respond = 200;
+        } catch (Exception $ex) {
+
+            $response = [
+                'message' => 'Internal server Error',
+            ];
+            $respond = 500;
+        }
+        return response()->json($response, $respond);
+    }
+
+
+
+
+
+
 
 
 
