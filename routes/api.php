@@ -70,7 +70,6 @@ Route::middleware(['token'])->group(function () {
     Route::get('farmerTotalEarning', [ResponseController::class, 'farmerTotalEarning']);
     Route::get('farmerDailyRecords', [ResponseController::class, 'farmerDailyRecords']);
     Route::post('orderRecord', [FarmerController::class, 'orderRecord']);
-
 });
 
 // *********************************************************************************************//
