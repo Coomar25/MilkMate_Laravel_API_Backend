@@ -11,6 +11,8 @@ use App\Models\SupplyItem;
 use App\Models\FarmerOrder;
 use App\Models\Earning;
 use TheSeer\Tokenizer\Exception;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Token;
 
 class FarmerController extends Controller
 {
@@ -142,6 +144,7 @@ class FarmerController extends Controller
 
     public function orderRecord(Request $request)
     {
+
         $validatedData = $request->validate([
             'user_id' => 'required| integer | max:255',
             'name' => 'required|string| max:255',
@@ -149,26 +152,31 @@ class FarmerController extends Controller
             'quantity' => 'required | integer | max:255',
         ]);
 
-        if ($validatedData) {
-            $order = new FarmerOrder();
-            $order->user_id = $validatedData['user_id'];
-            $order->name = $validatedData['name'];
-            $order->price = $validatedData['price'];
-            $order->quantity = $validatedData['quantity'];
-            $order->expenditure = $validatedData['price'] * $validatedData['quantity'];
-            $order->save();
-
-            //Earning function called so that we can store expenditure
-            $userId = $order->user_id;
-            $this->earning($userId);
+        $farmerEarning = Earning::where('user_id', $validatedData['user_id'])->orderByDesc('id')->first();
+        if ($farmerEarning->earning < 1000) {
+            return response()->json([
+                'message' => "Your average earning is less than 1000, So You can't order from Dairy Income. Buying Supply Item is limited ! Buy through khalti"
+            ]);
+        } else {
+            if ($validatedData) {
+                $order = new FarmerOrder();
+                $order->user_id = $validatedData['user_id'];
+                $order->name = $validatedData['name'];
+                $order->price = $validatedData['price'];
+                $order->quantity = $validatedData['quantity'];
+                $order->expenditure = $validatedData['price'] * $validatedData['quantity'];
+                $order->save();
+                //Earning function called so that we can store expenditure
+                $userId = $order->user_id;
+                $this->earning($userId);
+            }
+            $response = [
+                'message' => "Item  Has been order successfully",
+                200
+            ];
+            return ($response);
         }
 
-        $response = [
-            'message' => "Item  Has been order successfully",
-            200
-        ];
-
-        return ($response);
     }
 
 

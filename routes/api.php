@@ -10,6 +10,8 @@ use App\Http\Controllers\ResponseController;
 use Illuminate\Support\Facades\Password;
 
 
+
+
 //Public Route or Open API
 
 Route::post('login', [AuthController::class, 'login']);
@@ -70,6 +72,7 @@ Route::middleware(['token'])->group(function () {
     Route::get('farmerTotalEarning', [ResponseController::class, 'farmerTotalEarning']);
     Route::get('farmerDailyRecords', [ResponseController::class, 'farmerDailyRecords']);
     Route::post('orderRecord', [FarmerController::class, 'orderRecord']);
+    Route::get('estimateFatLitrePrice', [ResponseController::class, 'estimateFatLitrePrice']);
 });
 
 // *********************************************************************************************//
@@ -86,3 +89,4 @@ Route::middleware(['token'])->group(function () {
 // Route::get('farmerTotalEarning/{user_id}', [ResponseController::class, 'farmerTotalEarning']);
 // Route::get('farmerDailyRecords/{user_id}', [ResponseController::class, 'farmerDailyRecords']);
 // Route::get('fetchSuppyItem', [ResponseController::class, 'fetchSuppyItem']);
+//Route::get('estimateFatLitrePrice/{user_id}', [ResponseController::class, 'estimateFatLitrePrice']);

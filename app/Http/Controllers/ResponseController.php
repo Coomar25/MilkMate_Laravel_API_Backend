@@ -61,7 +61,6 @@ class ResponseController extends Controller
         $user_id = $decodedToken->get('sub');
         // Get the user's earning
         $farmerEarning = Earning::where('user_id', $user_id)->orderByDesc('id')->first();
-
         return response()->json([
             'earningFarmer' => $farmerEarning
         ]);
@@ -82,6 +81,28 @@ class ResponseController extends Controller
         ]);
     }
 
+    public function estimateFatLitrePrice(Request $request)
+    {
+        $token = $request->query('token');
+        try {
+            $decodedToken = JWTAuth::decode(new Token($token));
+        } catch (\Exception $ex) {
+            return response()->json([$ex]);
+        }
+        $user_id = $decodedToken->get('sub');
+        $totalFat = DeliveryRecord::where('user_id', $user_id)->sum('fat');
+        $totalLitre = DeliveryRecord::where('user_id', $user_id)->sum('litre');
+        $totalPrice = DeliveryRecord::where('user_id', $user_id)->sum('price');
+
+        return response()->json(
+            [
+                "totalFat" => $totalFat,
+                "totalLitre" => $totalLitre,
+                "totalPrice" => $totalPrice
+            ]
+        );
+    }
+
 
 
 
@@ -93,6 +114,18 @@ class ResponseController extends Controller
     //     ]);
     // }
 
+    // public function estimateFatLitrePrice($user_id)
+    // {
+    //     $totalFat = DeliveryRecord::where('user_id', $user_id)->sum('litre');
+    //     $totalLitre = DeliveryRecord::where('user_id', $user_id)->sum('fat');
+    //     $totalPrice = DeliveryRecord::where('user_id', $user_id)->sum('price');
+
+    //     return response()->json([
+    //         "totalFat" => $totalFat,
+    //         "totalLitre" => $totalLitre,
+    //         "totalPrice" => $totalPrice
+    //     ]);
+    // }
 
     // public function farmerDailyRecords($user_id)
     // {
