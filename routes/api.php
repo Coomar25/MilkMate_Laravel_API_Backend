@@ -60,7 +60,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 // *********************************************************************************************//
 
 Route::middleware(['token'])->group(function () {
-
     //Admin Pannel Router
     Route::get('totalFarmers', [ResponseController::class, 'totalFarmers']);
     Route::post('storeDelivery', [FarmerController::class, 'storeDelivery']);
@@ -73,6 +72,7 @@ Route::middleware(['token'])->group(function () {
     Route::get('farmerDailyRecords', [ResponseController::class, 'farmerDailyRecords']);
     Route::post('orderRecord', [FarmerController::class, 'orderRecord']);
     Route::get('estimateFatLitrePrice', [ResponseController::class, 'estimateFatLitrePrice']);
+
 });
 
 // *********************************************************************************************//

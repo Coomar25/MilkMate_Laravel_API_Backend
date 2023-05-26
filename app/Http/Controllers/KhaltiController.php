@@ -33,9 +33,12 @@ class KhaltiController extends Controller
         curl_close($ch);
 
         if ($status_code == 200) {
+
             return response()->json([
-                'Message' => 'Payment Has been Done Successfully'
+                'Message' => 'Payment Has been Done Successfully',
+                'res' => $response
             ]);
+
         } else {
             return response()->json([
                 'message' => 'Something Went Wrong',

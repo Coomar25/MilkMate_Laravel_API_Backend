@@ -18,6 +18,7 @@ class FarmerController extends Controller
 {
     public function farmer()
     {
+        
         $user = User::with('infoUser')->first();
         return $response = [
             $user->toArray(),
@@ -135,16 +136,12 @@ class FarmerController extends Controller
             ];
         }
         return ($response);
-
-
-
     }
 
 
 
     public function orderRecord(Request $request)
     {
-
         $validatedData = $request->validate([
             'user_id' => 'required| integer | max:255',
             'name' => 'required|string| max:255',
@@ -158,7 +155,12 @@ class FarmerController extends Controller
                 'message' => "Your average earning is less than 1000, So You can't order from Dairy Income. Buying Supply Item is limited ! Buy through khalti"
             ]);
         } else {
-            if ($validatedData) {
+
+            if ($farmerEarning->earning < $validatedData['price']) {
+                return response()->json([
+                    'message' => 'Your total earning is less the price of product'
+                ]);
+            } elseif ($validatedData) {
                 $order = new FarmerOrder();
                 $order->user_id = $validatedData['user_id'];
                 $order->name = $validatedData['name'];

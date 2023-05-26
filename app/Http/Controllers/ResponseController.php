@@ -145,8 +145,14 @@ class ResponseController extends Controller
         }
         $user_id = $decodedToken->get('sub');
         $individual_order_record = FarmerOrder::where('user_id', $user_id)->get();
+        $individual_order_price = FarmerOrder::where('user_id', $user_id)->sum('price');
+        $individual_order_quantity = FarmerOrder::where('user_id', $user_id)->sum('quantity');
+        $individual_order_expenditure = FarmerOrder::where('user_id', $user_id)->sum('expenditure');
         return response()->json([
-            'indivudualOrder' => $individual_order_record
+            'indivudualOrder' => $individual_order_record,
+            'individualOrderTotalPrice' => $individual_order_price,
+            'individualOrderTotalQuantity' => $individual_order_quantity,
+            'individualOrderTotalExpenditure' => $individual_order_expenditure
         ]);
     }
 
