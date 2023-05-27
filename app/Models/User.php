@@ -49,6 +49,8 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(InfoUser::class);
     }
 
+
+
     public function FarmerOrder()
     {
         return $this->hasMany(FarmerOrder::class);
@@ -57,6 +59,11 @@ class User extends Authenticatable implements JWTSubject
     public function earning()
     {
         return $this->hasOne(Earning::class);
+    }
+
+    public function productdescription()
+    {
+        return $this->hasMany(ProductDescription::class);
     }
 
 
@@ -73,7 +80,7 @@ class User extends Authenticatable implements JWTSubject
 
 
 
-//********************************************************** */
+    //********************************************************** */
 
 
 

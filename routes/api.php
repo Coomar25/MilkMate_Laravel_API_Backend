@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Password;
 
 
 
+
 //Public Route or Open API
 
 Route::post('login', [AuthController::class, 'login']);
@@ -66,6 +67,8 @@ Route::middleware(['token'])->group(function () {
 
     Route::get('farmersOrderRecord', [ResponseController::class, 'farmersOrderRecord']);
     Route::post('supplyItem', [FarmerController::class, 'supplyInventory']);
+    Route::post('updateInventory/{editSuppyId}', [FarmerController::class, 'updateInventory']);
+
 
     //User Pannel Router
     Route::get('farmerTotalEarning', [ResponseController::class, 'farmerTotalEarning']);

@@ -10,6 +10,7 @@ use App\Models\DeliveryRecord;
 use App\Models\SupplyItem;
 use App\Models\FarmerOrder;
 use App\Models\Earning;
+use App\Models\ProductDescription;
 use TheSeer\Tokenizer\Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Token;
@@ -18,7 +19,7 @@ class FarmerController extends Controller
 {
     public function farmer()
     {
-        
+
         $user = User::with('infoUser')->first();
         return $response = [
             $user->toArray(),
@@ -47,7 +48,12 @@ class FarmerController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'price' => 'required|integer|min:255',
-            'image' => 'required|image|max:2048'
+            'image' => 'required|image|max:2048',
+            'batch' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'companyname' => 'required|string|max:255',
+            'quantity' => 'required|integer|max:255',
+            'expirydate' => 'required|integer|max:255',
         ]);
         $supply = new SupplyItem();
         $supply->name = $validatedData['name'];
@@ -60,8 +66,70 @@ class FarmerController extends Controller
             $supply->image = $imageName;
         }
         $supply->save();
+        $productdescription = new ProductDescription();
+        $productdescription->supply_id = $supply->id;
+        $productdescription->batch = $validatedData['batch'];
+        $productdescription->category = $validatedData['category'];
+        $productdescription->companyname = $validatedData['companyname'];
+        $productdescription->quantity = $validatedData['quantity'];
+        $productdescription->expirydate = $validatedData['expirydate'];
+        $productdescription->save();
         return response()->json(['message' => 'Supply item has been successfully stored.']);
     }
+
+
+    public function updateInventory(Request $request, $editSuppyId)
+    {
+        $id = $editSuppyId;
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'price' => 'required|integer|min:255',
+            'image' => 'nullable|image|max:2048',
+            'batch' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'companyname' => 'required|string|max:255',
+            'quantity' => 'required|integer|max:255',
+            'expirydate' => 'required|integer|max:255',
+        ]);
+
+        $supply = SupplyItem::findOrFail($id);
+        $supply->name = $validatedData['name'];
+        $supply->description = $validatedData['description'];
+        $supply->price = $validatedData['price'];
+
+        if ($request->hasFile('image')) {
+            // Remove the old image
+            if ($supply->image) {
+                // Assuming the images are stored in the 'images/' directory
+                $oldImagePath = public_path('images/') . $supply->image;
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move('images/', $imageName);
+            $supply->image = $imageName;
+        }
+
+        $supply->save();
+
+        $productDescription = ProductDescription::where('supply_id', $supply->id)->first();
+        $productDescription->batch = $validatedData['batch'];
+        $productDescription->category = $validatedData['category'];
+        $productDescription->companyname = $validatedData['companyname'];
+        $productDescription->quantity = $validatedData['quantity'];
+        $productDescription->expirydate = $validatedData['expirydate'];
+        $productDescription->save();
+
+        return response()->json(['message' => 'Supply item has been successfully updated.']);
+    }
+
+
+
+
 
 
 
@@ -198,23 +266,37 @@ class FarmerController extends Controller
     public function deleteInventory(Request $request)
     {
         $id = $request->id;
-        $item = SupplyItem::whereId($id);
-        // return response()->json("Successfullty data deleted");
-        try {
-            $item->delete();
+        $item = SupplyItem::whereId($id)->first(); // Retrieve the item from the database
+        $deleteRelationalSupplyData = ProductDescription::wheresupply_id($id)->delete(); //supply_id is foreign key 
+        if ($item) {
+            // Delete the associated image file
+            $imagePath = public_path('images/' . $item->image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+            // Delete the associated product_descriptions records
+            try {
+                $item->delete();
+                $response = [
+                    'message' => 'Item has been deleted successfully',
+                ];
+                $respond = 200;
+            } catch (Exception $ex) {
+                $response = [
+                    'message' => 'Internal server error',
+                ];
+                $respond = 500;
+            }
+        } else {
             $response = [
-                'message' => 'Item has been delete successfully',
+                'message' => 'Item not found',
             ];
-            $respond = 200;
-        } catch (Exception $ex) {
-
-            $response = [
-                'message' => 'Internal server Error',
-            ];
-            $respond = 500;
+            $respond = 404;
         }
+
         return response()->json($response, $respond);
     }
+
 
 
 
