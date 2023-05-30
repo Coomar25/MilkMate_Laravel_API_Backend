@@ -153,25 +153,18 @@ class FarmerController extends Controller
             'message' => 'User earning has been stored properly',
             200
         ];
-
         return $response;
-
-
     }
-
-
 
 
     public function storeDelivery(Request $request)
     {
-
         $validatedData = $request->validate([
             'user_id' => 'required|integer|max:255',
             'fat' => 'required|integer|max:255|',
             'litre' => 'required|integer|max:255|',
             // 'date' => 'required|date|max:255|',
         ]);
-
         if ($validatedData) {
             $user = new DeliveryRecord();
             $user->user_id = $validatedData['user_id'];
@@ -216,17 +209,15 @@ class FarmerController extends Controller
             'price' => 'required | integer | min:255',
             'quantity' => 'required | integer | max:255',
         ]);
-
         $farmerEarning = Earning::where('user_id', $validatedData['user_id'])->orderByDesc('id')->first();
         if ($farmerEarning->earning < 1000) {
             return response()->json([
-                'message' => "Your average earning is less than 1000, So You can't order from Dairy Income. Buying Supply Item is limited ! Buy through khalti"
+                'message' => "Your average earning is less than 1000, So You can't order from Dairy Income. Buying Supply Item is limited ! Pay via khalti"
             ]);
         } else {
-
             if ($farmerEarning->earning < $validatedData['price']) {
                 return response()->json([
-                    'message' => 'Your total earning is less the price of product'
+                    'message' => 'Insufficient Balance Please pay vai Khalti'
                 ]);
             } elseif ($validatedData) {
                 $order = new FarmerOrder();
