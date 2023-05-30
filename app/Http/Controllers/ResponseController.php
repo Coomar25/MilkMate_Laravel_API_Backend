@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\InfoUser;
 use App\Models\FarmerOrder;
 use App\Models\Earning;
+use App\Models\ProductDescription;
 use App\Models\SupplyItem;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -156,17 +157,38 @@ class ResponseController extends Controller
         ]);
     }
 
+    // public function fetchSuppyItem()
+    // {
+    //     $suppyItem = SupplyItem::all();
+    //     $productdescription = ProductDescription::all();
+    //     return response()->json([
+    //         'supplyItem' => $suppyItem,
+    //         'productdescription' => $productdescription
+    //     ]);
+    // }
+
+
     public function fetchSuppyItem()
     {
-        $suppyItem = SupplyItem::all();
+        $supplyItems = SupplyItem::all();
+        $combinedData = [];
+        foreach ($supplyItems as $supplyItem) {
+            $productDescription = $supplyItem->productDescription;
+            $combinedData[] = [
+                'name' => $supplyItem->name,
+                'description' => $supplyItem->description,
+                'price' => $supplyItem->price,
+                'image' => $supplyItem->image,
+                'batch' => $productDescription->batch,
+                'category' => $productDescription->category,
+                'companyname' => $productDescription->companyname,
+                'expirydate' => $productDescription->expirydate,
+                'quantity' => $productDescription->quantity,
+            ];
+        }
         return response()->json([
-            'supplyItem' => $suppyItem
+            "supplyItem" => $combinedData
         ]);
     }
-
-
-
-
-
 
 }

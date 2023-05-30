@@ -16,4 +16,10 @@ class SupplyItem extends Model
         'image'
     ];
 
+    public function productDescription()
+    {
+        return $this->hasOne(ProductDescription::class, 'supply_id');
+    }
+
+
 }

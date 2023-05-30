@@ -17,9 +17,10 @@ class ProductDescription extends Model
         'quantity'
     ];
 
-    public function suppyDescription()
+    public function supplyItem()
     {
-        return $this->belongsTo(SupplyItem::class);
+        return $this->belongsTo(SupplyItem::class, 'supply_id');
     }
+
 
 }
