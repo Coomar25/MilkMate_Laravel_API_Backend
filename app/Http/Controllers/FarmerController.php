@@ -53,7 +53,7 @@ class FarmerController extends Controller
             'category' => 'required|string|max:255',
             'companyname' => 'required|string|max:255',
             'quantity' => 'required|integer|max:255',
-            'expirydate' => 'required|integer|max:255',
+            'expirydate' => 'required|string|max:255',
         ]);
         $supply = new SupplyItem();
         $supply->name = $validatedData['name'];
@@ -136,8 +136,6 @@ class FarmerController extends Controller
     public function earning($userId)
     {
         $totalearning = new Earning();
-        // $delivery = DeliveryRecord::latest()->first();
-        // $order = Farmer_Order::latest()->first();
         $totalSales = DeliveryRecord::where('user_id', $userId)->sum('litre');
         $incomePrice = DeliveryRecord::where('user_id', $userId)->sum('price');
         $expenditurePrice = FarmerOrder::where('user_id', $userId)->latest('created_at')->sum('expenditure');
@@ -203,6 +201,7 @@ class FarmerController extends Controller
 
     public function orderRecord(Request $request)
     {
+        $checkStatus = new FarmerOrder();
         $validatedData = $request->validate([
             'user_id' => 'required| integer | max:255',
             'name' => 'required|string| max:255',
@@ -228,8 +227,8 @@ class FarmerController extends Controller
                 $order->expenditure = $validatedData['price'] * $validatedData['quantity'];
                 $order->save();
                 //Earning function called so that we can store expenditure
-                $userId = $order->user_id;
-                $this->earning($userId);
+                // $userId = $order->user_id;
+                // $this->earning($userId);
             }
             $response = [
                 'message' => "Item  Has been order successfully",
@@ -237,7 +236,6 @@ class FarmerController extends Controller
             ];
             return ($response);
         }
-
     }
 
 
@@ -284,9 +282,60 @@ class FarmerController extends Controller
             ];
             $respond = 404;
         }
-
         return response()->json($response, $respond);
     }
+
+
+    // public function checkOrderStatus(Request $request)
+    // {
+    //     $user_id = $request->user_id;
+    //     $status = $request->status;
+    //     $farmerorder = FarmerOrder::where('user_id', $user_id)->first();
+    //     if ($farmerorder) {
+    //         $farmerorder->status = $status;
+    //         $farmerorder->save();
+    //         return response()->json([
+    //             "message" => "Status updated successfully"
+    //         ]);
+    //     } else {
+    //         return response()->json([
+    //             "message" => "No order found for the given user_id"
+    //         ], 404);
+    //     }
+    // }
+
+    public function checkOrderStatus(Request $request)
+    {
+        $id = $request->id;
+        $status = $request->status;
+
+        $farmerorders = FarmerOrder::where('id', $id)->get();
+        //database ma save garnu aagadi hamle itterate garnu parne hunxa each order lai ra tespaxi update garxaam status lai
+        if ($farmerorders->isNotEmpty()) {
+            foreach ($farmerorders as $farmerorder) {
+                $farmerorder->status = $status;
+                $farmerorder->save();
+                if ($farmerorder->status == "completed") {
+                    $userId = $farmerorder->user_id;
+                    $this->earning($userId);
+                }
+            }
+            return response()->json([
+                "message" => "Status updated successfully"
+            ]);
+        } else {
+            return response()->json([
+                "message" => "No orders found for the given user_id"
+            ], 404);
+        }
+    }
+
+    //In the modified code, we use ->get() instead of ->first() to retrieve all orders matching the specified user_id. 
+    //Then, we iterate through each order and update the status field before saving it to the database.
+    // If no orders are found for the given user_id, we return a 404 response with a relevant message.
+    // Remember to adjust the code based on your Laravel setup and the structure of your FarmerOrder model.
+
+
 
 
 

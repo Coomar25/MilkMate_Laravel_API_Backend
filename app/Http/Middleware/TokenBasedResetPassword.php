@@ -35,7 +35,6 @@ class TokenBasedResetPassword
                 ]);
             }
 
-
         } catch (\Exception $ex) {
             return response()->json([
                 "message" => "Error occured"

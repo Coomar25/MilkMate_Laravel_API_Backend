@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->integer('price');
             $table->integer('quantity');
             $table->integer('expenditure');
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

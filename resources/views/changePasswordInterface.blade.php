@@ -26,9 +26,9 @@
 </head>
 
 <body>
+    {{-- We don't need action because we are in the same url only method is different --}}
     <form method="POSt" action="">
         @csrf
-
         <input type="hidden" name="id" value="{{ $id }}">
         <div class="row g-3 align-items-center ">
             <div class="col-auto">
@@ -44,8 +44,6 @@
                 </span>
             </div>
         </div>
-
-
         <div class="row g-3 align-items-center">
             <div class="col-auto">
                 <label for="inputPassword7" class="col-form-label">Confirm Password</label>
@@ -60,7 +58,6 @@
                 </span>
             </div>
         </div>
-
         <button type="submit">Submit</button>
     </form>
 </body>

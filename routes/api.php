@@ -36,6 +36,8 @@ Route::post('khalticheckout', [KhaltiController::class, 'verify']);
 Route::middleware(['TokenBasedResetPassword'])->group(function () {
     Route::get('reset-password', [UserController::class, 'resetpasswordUserInterface']);
     Route::post('reset-password', [UserController::class, 'resetPassword']);
+    Route::get('registerMailView', [UserController::class, 'registerMailView']);
+    Route::post('registerMailView', [UserController::class, 'registerMailStore']);
     Route::get('testmiddleware', function () {
         return response()->json([
             'message' => 'you successfully enter into a middleware route'
@@ -64,10 +66,11 @@ Route::middleware(['token'])->group(function () {
     //Admin Pannel Router
     Route::get('totalFarmers', [ResponseController::class, 'totalFarmers']);
     Route::post('storeDelivery', [FarmerController::class, 'storeDelivery']);
-
+    Route::post('checkOrderStatus', [FarmerController::class, 'checkOrderStatus']);
     Route::get('farmersOrderRecord', [ResponseController::class, 'farmersOrderRecord']);
     Route::post('supplyItem', [FarmerController::class, 'supplyInventory']);
     Route::post('updateInventory/{editSuppyId}', [FarmerController::class, 'updateInventory']);
+    Route::post('registerThroughMail', [UserController::class, 'registerThroughMail']);
 
 
     //User Pannel Router
