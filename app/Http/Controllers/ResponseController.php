@@ -39,7 +39,6 @@ class ResponseController extends Controller
 
     public function farmerDeliveredStatement()
     {
-
         $statement = DeliveryRecord::latest('created_at')->take(8)->get();
         return response()->json([
             'statement' => $statement

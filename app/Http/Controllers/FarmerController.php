@@ -166,6 +166,11 @@ class FarmerController extends Controller
         if ($validatedData) {
             $user = new DeliveryRecord();
             $user->user_id = $validatedData['user_id'];
+            $farmer = new User();
+            $farmer = User::find($user->user_id);
+            $farmerName = $farmer->name;
+            // dd($farmerName);
+            $user->farmername = $farmerName;
             $user->fat = $validatedData['fat'];
             $user->litre = $validatedData['litre'];
             // $user->date = $validatedData['date'];

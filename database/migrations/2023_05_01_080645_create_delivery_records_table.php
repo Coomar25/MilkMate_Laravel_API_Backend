@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             // $table->foreign('farmer_id')->references('id')->on('users');
+            $table->string('farmername');
             $table->integer('fat');
             $table->integer('litre');
             $table->string('date');
