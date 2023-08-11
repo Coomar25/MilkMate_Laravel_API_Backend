@@ -11,6 +11,7 @@ use App\Models\Earning;
 use App\Models\ProductDescription;
 use App\Models\SupplyItem;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Token;
 
@@ -189,5 +190,74 @@ class ResponseController extends Controller
             "supplyItem" => $combinedData
         ]);
     }
+
+
+    // public function totalsupplyItem()
+    // {
+    //     $suppyItems = SupplyItem::with('productDescription')->get();
+    //     // $correspondingiSupplyItem = ProductDescription::all();
+    //     return response()->json([
+    //         'response' => $suppyItems,
+    //         // 'added_response' => $correspondingiSupplyItem
+    //     ]);
+    // }
+
+
+    public function totalsupplyItem()
+    {
+        // or you can use ORM as SupplyItem::join('product_descriptions', 'supply_items.id', '=', 'product_descriptions.supply_id')
+        $flattenedResponse = DB::table('supply_items')
+            ->join('product_descriptions', 'supply_items.id', '=', 'product_descriptions.supply_id')
+            ->select(
+                'supply_items.id',
+                'supply_items.name',
+                'supply_items.description',
+                'supply_items.price',
+                'supply_items.image',
+                'supply_items.created_at',
+                'supply_items.updated_at',
+                'product_descriptions.batch',
+                'product_descriptions.category',
+                'product_descriptions.companyname',
+                'product_descriptions.quantity',
+                'product_descriptions.expirydate'
+            )
+            ->get();
+        return response()->json([
+            'response' => $flattenedResponse,
+        ]);
+    }
+
+
+    public function searchsupplyitem(Request $request)
+    {
+        $search = $request->input('search');
+        $flattenedResponse = DB::table('supply_items')
+            ->join('product_descriptions', 'supply_items.id', '=', 'product_descriptions.supply_id')
+            ->select(
+                'supply_items.id',
+                'supply_items.name',
+                'supply_items.description',
+                'supply_items.price',
+                'supply_items.image',
+                'supply_items.created_at',
+                'supply_items.updated_at',
+                'product_descriptions.batch',
+                'product_descriptions.category',
+                'product_descriptions.companyname',
+                'product_descriptions.quantity',
+                'product_descriptions.expirydate'
+            )
+            ->where('supply_items.name', 'LIKE', '%' . $search . '%')->orWhere('supply_items.name', 'LIKE', '%' . $search . '%')->get();
+        return response()->json([
+            'supplyItem' => $flattenedResponse,
+        ]);
+
+    }
+
+
+
+
+
 
 }

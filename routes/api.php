@@ -27,6 +27,12 @@ Route::post('deleteInventory/{id}', [FarmerController::class, 'deleteInventory']
 Route::post('khalticheckout', [KhaltiController::class, 'verify']);
 
 
+
+// lets test the public route where we will fetch the data in frontend without refreshing the page in laravel
+Route::get('totalsupplyItem', [ResponseController::class, 'totalsupplyItem']);
+Route::post('searchsupplyitem', [ResponseController::class, 'searchsupplyitem']);
+
+
 //Protected Route
 
 // ********************************************************************************************************//

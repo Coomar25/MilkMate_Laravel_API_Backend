@@ -73,7 +73,6 @@ class UserController extends Controller
             $newUser->address = $validatedData['address'];
             $newUser->contact = $validatedData['contact'];
             $newUser->save();
-
             $response = [
                 // 'token' => $token,
                 'message' => 'User has been success fully inserted',
@@ -92,28 +91,6 @@ class UserController extends Controller
 
     }
 
-    public function show(string $id)
-    {
-        //
-    }
-
-
-    public function edit(string $id)
-    {
-        //
-    }
-
-
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-
-    public function destroy(string $id)
-    {
-
-    }
 
     public function registerThroughMail(Request $request)
     {
@@ -153,7 +130,7 @@ class UserController extends Controller
                 ]);
 
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => "Failed "
             ]);
