@@ -175,6 +175,7 @@ class ResponseController extends Controller
         foreach ($supplyItems as $supplyItem) {
             $productDescription = $supplyItem->productDescription;
             $combinedData[] = [
+                'id' => $supplyItem->id,
                 'name' => $supplyItem->name,
                 'description' => $supplyItem->description,
                 'price' => $supplyItem->price,
